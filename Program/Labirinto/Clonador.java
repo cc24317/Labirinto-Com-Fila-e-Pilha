@@ -1,7 +1,13 @@
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
+
 public class Clonador <X>
 {
-    public X clone (X x)
+    public X clone (X x) throws Exception
     {        
+        if (x == null)
+            throw new Exception("Objeto a ser clonado é nulo");
+            
         // assim obtemos a classe da instancia no objeto
         // x, que, conforme sabemos, é a classe X, e a
         // armazenamos no objeto chamado classe
@@ -19,7 +25,9 @@ public class Clonador <X>
             metodo = classe.getMethod ("clone",tpsParmsForms);
         }
         catch (NoSuchMethodException erro)
-        {}
+        {
+            throw new Exception("Objeto não possui método clone");
+        }
         
         // null porque chamaremos um metodo sem parametros
         Object[] parmsReais = null;
@@ -38,9 +46,13 @@ public class Clonador <X>
             ret = (X)metodo.invoke(x,parmsReais);
         }
         catch (InvocationTargetException erro)
-        {}
+        {
+            throw new Exception("Erro ao invocar método clone: " + erro.getMessage());
+        }
         catch (IllegalAccessException erro)
-        {}
+        {
+            throw new Exception("Acesso ilegal ao método clone: " + erro.getMessage());
+        }
 
         // ret = (X)x.clone();
         
