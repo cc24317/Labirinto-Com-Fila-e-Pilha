@@ -8,15 +8,34 @@ public class LerArquivoTXT implements Cloneable {
     public LerArquivoTXT(String nomeArquivo) throws Exception {
         lerArquivo(nomeArquivo);
     }
+    
+    public int getQtdLinhas() {
+        return qtdLinhas;
+    }
 
+    public int getQtdColunas() {
+        return qtdColunas;
+    }
+
+    public String[] getConteudo() {
+        return conteudo;
+    }
+    
     // Construtor de cópia
     public LerArquivoTXT(LerArquivoTXT modelo) throws Exception {
         if (modelo == null) {
             throw new Exception("Modelo ausente");
         }
+        
+        // Copia os atributos primitivos
         this.qtdLinhas = modelo.qtdLinhas;
         this.qtdColunas = modelo.qtdColunas;
-        this.conteudo = modelo.conteudo.clone();
+        
+        // Faz uma cópia profunda do array de conteúdo
+        this.conteudo = new String[modelo.qtdLinhas];
+        for (int i = 0; i < modelo.qtdLinhas; i++) {
+            this.conteudo[i] = new String(modelo.conteudo[i]);
+        }
     }
 
     private void lerArquivo(String nomeArquivo) throws Exception {
@@ -39,18 +58,6 @@ public class LerArquivoTXT implements Cloneable {
         } catch (IOException e) {
             throw new Exception("Erro ao ler o arquivo: " + e.getMessage());
         }
-    }
-
-    public int getQtdLinhas() {
-        return qtdLinhas;
-    }
-
-    public int getQtdColunas() {
-        return qtdColunas;
-    }
-
-    public String[] getConteudo() {
-        return conteudo;
     }
 
     @Override

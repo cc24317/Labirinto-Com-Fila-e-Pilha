@@ -1,75 +1,74 @@
 import java.util.Objects;
 
-public class Coordenada implements Cloneable {
-    private int x;
-    private int y;
+public class Coordenadas implements Cloneable {
+    private int linha;
+    private int coluna;
 
-    public Coordenada(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Coordenadas(int linha, int coluna) {
+        this.linha = linha;
+        this.coluna = coluna;
     }
 
-    public int getX() {
-        return x;
+    public int getLinha() {
+        return linha;
     }
 
-    public int getY() {
-        return y;
+    public int getColuna() {
+        return coluna;
     }
 
-    public void setX(int x) {
-        this.x = x;
+    public void setLinha(int linha) {
+        this.linha = linha;
     }
 
-    public void setY(int y) {
-        this.y = y;
+    public void setColuna(int coluna) {
+        this.coluna = coluna;
     }
 
-     // Método para mover a coordenada atual por um deslocamento (dx, dy)
-    public Coordenada moverPara(int dx, int dy) {
-         // Retorna uma nova coordenada com o novo valor de x e y após o movimento
-        return new Coordenada(this.x + dx, this.y + dy);
+    // Método para mover a coordenada atual por um deslocamento (dx, dy)
+    public Coordenadas moverPara(int dx, int dy) {
+        // Retorna uma nova coordenada com o novo valor de x e y após o movimento
+        return new Coordenadas(this.linha + dx, this.coluna + dy);
     }
 
     // Método que calcula a distância de Manhattan entre a coordenada atual e outra coordenada
-    public int distanciaPara(Coordenada outra) {
+    public int distanciaPara(Coordenadas outra) {
         // A distância de Manhattan é a soma das diferenças absolutas de x e y
         //Manhattan: a soma da distância horizontal + vertical (sem diagonais).
-        return Math.abs(this.x - outra.x) + Math.abs(this.y - outra.y); // Distância de Manhattan
+        return Math.abs(this.linha - outra.linha) + Math.abs(this.coluna - outra.coluna); // Distância de Manhattan
     }
 
     @Override
     public String toString() {
-        return "Coordenada: (" + x + ", " + y + ")";
+        return "[" + linha + "," + coluna + "]";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
-
-        Coordenada outra = (Coordenada) obj;
-        return this.x == outra.x && this.y == outra.y;
+        Coordenadas other = (Coordenadas) obj;
+        return linha == other.linha && coluna == other.coluna;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, y);
+        return 31 * linha + coluna;
     }
 
-    public Coordenada(Coordenada modelo) throws Exception {
+    public Coordenadas(Coordenadas modelo) throws Exception {
         if (modelo == null)
             throw new Exception("Modelo não pode ser nulo");
 
-        this.x = modelo.x;
-        this.y = modelo.y;
+        this.linha = modelo.linha;
+        this.coluna = modelo.coluna;
     }
 
     @Override
-    public Coordenada clone() {
-        Coordenada ret = null;
+    public Coordenadas clone() {
+        Coordenadas ret = null;
         try {
-            return new Coordenada(this);
+            return new Coordenadas(this);
         } catch (Exception e) {
         }
         return ret;
