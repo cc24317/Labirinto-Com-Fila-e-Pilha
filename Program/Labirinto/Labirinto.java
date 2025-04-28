@@ -1,17 +1,12 @@
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Labirinto {
-    // Representa o labirinto carregado do arquivo
     private Matriz matriz;
-    // Pilha usada para armazenar o caminho atual (DFS)
     private Pilha<Coordenadas> caminho;
-    // Pilha com filas de alternativas para retorno/backtracking (DFS)
     private Pilha<Fila<Coordenadas>> possibilidades;
-    // Posição atual no labirinto
     private Coordenadas atual;
-    // Flag indicando se a saída foi encontrada
     private boolean saidaEncontrada;
 
     // Construtor: carrega o labirinto de um arquivo e inicializa as estruturas
@@ -27,20 +22,19 @@ public class Labirinto {
         encontrarEntrada(); // Define o ponto de entrada
     }
 
-    // Localiza a coordenada de entrada no labirinto
+    // Método que localiza a entrada no labirinto
     private void encontrarEntrada() throws Exception {
         Coordenadas entrada = matriz.getEntrada();
-        if (entrada == null) {
+        if (entrada == null)
             throw new Exception("Entrada do labirinto não encontrada");
-        }
+
         this.atual = entrada;
     }
 
-    // ---------- RESOLUÇÃO COM PILHA (DFS) ----------
-    // Método recursivo que tenta encontrar a saída utilizando busca em profundidade
+    // Método para percorrer o labirinto usando busca em profundidade (DFS)
     public boolean percorrerLabirinto() throws Exception {
-        matriz.setElemento(atual.getLinha(), atual.getColuna(), '*'); // Marca como visitado
-        caminho.guardeUmItem(atual); // Guarda a posição no caminho
+        matriz.setElemento(atual.getLinha(), atual.getColuna(), '*'); // Marca posição atual
+        caminho.guardeUmItem(atual); // Guarda a posição atual
 
         // Verifica se chegou à saída
         if (atual.equals(matriz.getSaida())) {
@@ -48,36 +42,45 @@ public class Labirinto {
             return true;
         }
 
-        // Busca por direções possíveis a partir da posição atual
+        // Obtém as direções possíveis a partir da posição atual
         Fila<Coordenadas> direcoes = obterDirecoesPossiveis();
 
         // Se não há opções de movimento, tenta retroceder
         if (direcoes.isVazia()) {
-            if (possibilidades.isVazia()) return false; // Não há como voltar mais
+            if (possibilidades.isVazia())
+                return false; // Não há mais para onde voltar
 
-            caminho.removaUmItem(); // Remove a posição atual
-            atual = caminho.recupereUmItem(); // Volta à anterior
-            direcoes = possibilidades.recupereUmItem(); // Recupera direções salvas
+            // Marca como espaço vazio onde estava
+            Coordenadas ultima = caminho.recupereUmItem();
+            matriz.setElemento(ultima.getLinha(), ultima.getColuna(), ' ');
+            caminho.removaUmItem();
+
+            // Atualiza a posição atual para o novo topo
+            if (!caminho.isVazia())
+                atual = caminho.recupereUmItem();
+
+            direcoes = possibilidades.recupereUmItem();
             possibilidades.removaUmItem();
         } else {
-            possibilidades.guardeUmItem(direcoes); // Salva possibilidades para backtracking
+            possibilidades.guardeUmItem(direcoes); // Salva possibilidades
         }
 
-        // Tenta cada direção possível recursivamente
+        // Tenta cada direção possível
         while (!direcoes.isVazia()) {
             Coordenadas proxima = direcoes.recupereUmItem();
             direcoes.removaUmItem();
             atual = proxima;
 
-            if (percorrerLabirinto()) return true; // Caminho encontrado
+            if (percorrerLabirinto())
+                return true; // Caminho encontrado
         }
 
-        return false; // Não encontrou saída neste caminho
+        return false; // Caminho não encontrado
     }
 
-    // Retorna as direções possíveis (cima, direita, baixo, esquerda) que ainda não foram visitadas
+    // Método que retorna as direções possíveis a partir da posição atual
     private Fila<Coordenadas> obterDirecoesPossiveis() throws Exception {
-        Fila<Coordenadas> direcoes = new Fila<>(4);
+        Fila<Coordenadas> direcoes = new Fila<>(4); // Máximo 4 direções (cima, direita, baixo, esquerda)
         int linha = atual.getLinha();
         int coluna = atual.getColuna();
 
@@ -87,23 +90,19 @@ public class Labirinto {
             int novaLinha = linha + mov[0];
             int novaColuna = coluna + mov[1];
 
-            // Verifica se a nova coordenada está dentro dos limites
             if (novaLinha >= 0 && novaLinha < matriz.getLinhas() &&
                 novaColuna >= 0 && novaColuna < matriz.getColunas()) {
 
                 char elemento = matriz.getElemento(novaLinha, novaColuna);
-                // Verifica se a posição é caminho livre ou a saída
-                if (elemento == ' ' || elemento == 'S') {
+                if (elemento == ' ' || elemento == 'S')
                     direcoes.guardeUmItem(new Coordenadas(novaLinha, novaColuna));
-                }
             }
         }
 
         return direcoes;
     }
 
-    // ---------- RESOLUÇÃO COM FILA (BFS) ----------
-    // Método iterativo que usa busca em largura para encontrar o caminho mais curto até a saída
+    // Método para resolver o labirinto utilizando busca em largura (BFS)
     public boolean resolverComFila() throws Exception {
         Fila<Coordenadas> fila = new Fila<>(matriz.getLinhas() * matriz.getColunas());
         Coordenadas[][] predecessores = new Coordenadas[matriz.getLinhas()][matriz.getColunas()];
@@ -111,20 +110,18 @@ public class Labirinto {
         Coordenadas saida = matriz.getSaida();
 
         fila.guardeUmItem(entrada);
-        matriz.setElemento(entrada.getLinha(), entrada.getColuna(), '*'); // Marca como visitado
+        matriz.setElemento(entrada.getLinha(), entrada.getColuna(), '*');
 
         while (!fila.isVazia()) {
             Coordenadas atual = fila.recupereUmItem();
             fila.removaUmItem();
 
             if (atual.equals(saida)) {
-                // Reconstrói o caminho do final até o início usando predecessores
                 reconstruirCaminho(predecessores, saida, entrada);
                 saidaEncontrada = true;
                 return true;
             }
 
-            // Verifica vizinhos válidos e ainda não visitados
             for (Coordenadas vizinho : vizinhosValidos(atual)) {
                 if (matriz.getElemento(vizinho.getLinha(), vizinho.getColuna()) == ' ' ||
                     matriz.getElemento(vizinho.getLinha(), vizinho.getColuna()) == 'S') {
@@ -139,17 +136,17 @@ public class Labirinto {
         return false; // Não encontrou caminho
     }
 
-    // Reconstrói o caminho da saída até a entrada com base nos predecessores encontrados durante a BFS
-    private void reconstruirCaminho(Coordenadas[][] predecessores, Coordenadas fim, Coordenadas inicio) {
+    // Método que reconstrói o caminho a partir dos predecessores
+    private void reconstruirCaminho(Coordenadas[][] predecessores, Coordenadas fim, Coordenadas inicio) throws Exception {
         Coordenadas atual = fim;
         while (!atual.equals(inicio)) {
             caminho.guardeUmItem(atual);
             atual = predecessores[atual.getLinha()][atual.getColuna()];
         }
-        caminho.guardeUmItem(inicio); // Adiciona o ponto inicial no fim
+        caminho.guardeUmItem(inicio);
     }
 
-    // Retorna os vizinhos válidos (dentro da matriz)
+    // Método que retorna os vizinhos válidos para um ponto
     private Coordenadas[] vizinhosValidos(Coordenadas coord) {
         int[][] movimentos = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
         List<Coordenadas> vizinhos = new ArrayList<>();
@@ -159,204 +156,50 @@ public class Labirinto {
             int novaColuna = coord.getColuna() + mov[1];
 
             if (novaLinha >= 0 && novaLinha < matriz.getLinhas() &&
-                novaColuna >= 0 && novaColuna < matriz.getColunas()) {
+                novaColuna >= 0 && novaColuna < matriz.getColunas())
                 vizinhos.add(new Coordenadas(novaLinha, novaColuna));
-            }
         }
 
         return vizinhos.toArray(new Coordenadas[0]);
     }
 
-    // ---------- GETTERS ----------
-    public boolean isSaidaEncontrada() {
-        return saidaEncontrada;
-    }
-
-    public Matriz getMatriz() {
-        return matriz;
-    }
-
-    public Pilha<Coordenadas> getCaminho() {
-        return caminho;
-    }
-
-    public Pilha<Fila<Coordenadas>> getPossibilidades() {
-        return possibilidades;
-    }
-
-    public Coordenadas getAtual() {
-        return atual;
-    }
+    // Getters
+    public boolean isSaidaEncontrada() { return saidaEncontrada; }
+    public Matriz getMatriz() { return matriz; }
+    public Pilha<Coordenadas> getCaminho() { return caminho; }
+    public Pilha<Fila<Coordenadas>> getPossibilidades() { return possibilidades; }
+    public Coordenadas getAtual() { return atual; }
 
     @Override
     public String toString() {
-        // Usando StringBuilder para criar uma representação de texto eficiente do labirinto
         StringBuilder sb = new StringBuilder();
     
-        // Adiciona a matriz (representando o labirinto) linha por linha
         for (int i = 0; i < matriz.getLinhas(); i++) {
             for (int j = 0; j < matriz.getColunas(); j++) {
-                sb.append(matriz.getElemento(i, j));  // Adiciona o elemento da posição (i, j) da matriz
-            }
-            sb.append("\n");  // Adiciona uma quebra de linha após cada linha da matriz
-        }
-    
-        // Adiciona o caminho percorrido
-        sb.append("\nCaminho percorrido:\n");
-        for (Coordenadas coord : caminho) {
-            sb.append(coord.toString()).append("\n");  // Adiciona cada coordenada do caminho
-        }
-    
-        return sb.toString();  // Retorna a representação completa do labirinto como uma string
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        // Verifica se os dois objetos são a mesma instância
-        if (this == obj) return true;
-        
-        // Verifica se o objeto é nulo ou se as classes são diferentes
-        if (obj == null || getClass() != obj.getClass()) return false;
-    
-        // Faz o cast para a classe Labirinto
-        Labirinto labirinto = (Labirinto) obj;
-    
-        // Compara as matrizes e os caminhos dos dois labirintos
-        return matriz.equals(labirinto.matriz) && caminho.equals(labirinto.caminho);
-    }
-    
-    @Override
-    public int hashCode() {
-        // Gera o código hash com base na matriz e no caminho
-        return Objects.hash(matriz, caminho);
-    }
-    
-}
-
-
-
-
-/*﻿import java.io.IOException;
-
-public class Labirinto {
-    private Matriz matriz;
-    private Pilha<Coordenadas> caminho;
-    private Pilha<Fila<Coordenadas>> possibilidades;
-    private Coordenadas atual;
-    private boolean saidaEncontrada;
-
-    public Labirinto(String caminhoArquivo) throws Exception {
-        // Lê o arquivo e cria a matriz
-        LerArquivoTXT arquivo = new LerArquivoTXT(caminhoArquivo);
-        this.matriz = new Matriz(arquivo);
-
-        // Inicializa as pilhas com capacidade baseada no tamanho da matriz
-        int capacidade = matriz.getLinhas() * matriz.getColunas();
-        this.caminho = new Pilha<>(capacidade);
-        this.possibilidades = new Pilha<>(capacidade);
-        this.saidaEncontrada = false;
-
-        // Encontra a entrada do labirinto
-        encontrarEntrada();
-    }
-
-    private void encontrarEntrada() throws Exception {
-        Coordenadas entrada = matriz.getEntrada();
-        if (entrada == null) {
-            throw new Exception("Entrada do labirinto não encontrada");
-        }
-        this.atual = entrada;
-    }
-
-    public boolean percorrerLabirinto() throws Exception {
-        // Marca a posição atual como visitada
-        matriz.setElemento(atual.getLinha(), atual.getColuna(), '*');
-        
-        // Adiciona a posição atual ao caminho
-        caminho.guardeUmItem(atual);
-
-        // Se chegou na saída, retorna true
-        if (atual.equals(matriz.getSaida())) {
-            this.saidaEncontrada = true;
-            return true;
-        }
-
-        // Obtém as possíveis direções para seguir
-        Fila<Coordenadas> direcoes = obterDirecoesPossiveis();
-        
-        // Se não há direções possíveis, volta para a última posição com alternativas
-        if (direcoes.isVazia()) {
-            if (possibilidades.isVazia()) {
-                return false; // Não há mais caminhos possíveis
-            }
-            
-            // Volta para a última posição com alternativas
-            caminho.removaUmItem(); // Remove a posição atual do caminho
-            atual = caminho.recupereUmItem(); // Atualiza a posição atual
-            direcoes = possibilidades.recupereUmItem(); // Pega as direções da última posição com alternativas
-            possibilidades.removaUmItem();
-        } else {
-            // Guarda as direções possíveis para voltar depois se necessário
-            possibilidades.guardeUmItem(direcoes);
-        }
-
-        // Tenta seguir em uma das direções possíveis
-        while (!direcoes.isVazia()) {
-            Coordenadas proxima = direcoes.recupereUmItem();
-            direcoes.removaUmItem();
-            atual = proxima;
-            
-            if (percorrerLabirinto()) {
-                return true; // Encontrou a saída
-            }
-        }
-
-        return false; // Não encontrou caminho para a saída
-    }
-
-    private Fila<Coordenadas> obterDirecoesPossiveis() throws Exception {
-        Fila<Coordenadas> direcoes = new Fila<>(4); // Máximo 4 direções possíveis
-        int linha = atual.getLinha();
-        int coluna = atual.getColuna();
-
-        // Verifica as 4 direções possíveis (cima, direita, baixo, esquerda)
-        int[][] movimentos = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
-        
-        for (int[] movimento : movimentos) {
-            int novaLinha = linha + movimento[0];
-            int novaColuna = coluna + movimento[1];
-
-            // Verifica se a nova posição é válida e não foi visitada
-            if (novaLinha >= 0 && novaLinha < matriz.getLinhas() &&
-                novaColuna >= 0 && novaColuna < matriz.getColunas()) {
-                
-                char elemento = matriz.getElemento(novaLinha, novaColuna);
-                if (elemento == ' ' || elemento == 'S') {
-                    direcoes.guardeUmItem(new Coordenadas(novaLinha, novaColuna));
+                try {
+                    sb.append(matriz.getElemento(i, j));
+                } catch (Exception e) {
+                    sb.append('?'); // Se der erro, coloca um caractere qualquer
                 }
             }
+            sb.append("\n");
         }
+    
+        return sb.toString();
+    }
+    
 
-        return direcoes;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Labirinto outro = (Labirinto) obj;
+        return matriz.equals(outro.matriz) && caminho.equals(outro.caminho);
     }
 
-    public boolean isSaidaEncontrada() {
-        return saidaEncontrada;
+    @Override
+    public int hashCode() {
+        return Objects.hash(matriz, caminho);
     }
-
-    public Matriz getMatriz() {
-        return matriz;
-    }
-
-    public Pilha<Coordenadas> getCaminho() {
-        return caminho;
-    }
-
-    public Pilha<Fila<Coordenadas>> getPossibilidades() {
-        return possibilidades;
-    }
-
-    public Coordenadas getAtual() {
-        return atual;
-    }
-}*/
+}
