@@ -19,14 +19,14 @@ public class Labirinto {
         this.possibilidades = new Pilha<>(capacidade);
         this.saidaEncontrada = false;
 
-        encontrarEntrada(); // Define o ponto de entrada
+        encontrarEntrada(); 
     }
 
     // Método que localiza a entrada no labirinto
     private void encontrarEntrada() throws Exception {
         Coordenadas entrada = matriz.getEntrada();
         if (entrada == null)
-            throw new Exception("Entrada do labirinto não encontrada");
+            throw new Exception("ERRO: Entrada do labirinto não encontrada! Verifique se o arquivo contém o caractere 'E' para marcar a entrada.");
 
         this.atual = entrada;
     }
@@ -47,8 +47,18 @@ public class Labirinto {
 
         // Se não há opções de movimento, tenta retroceder
         if (direcoes.isVazia()) {
-            if (possibilidades.isVazia())
-                return false; // Não há mais para onde voltar
+            if (possibilidades.isVazia()) {
+                // Verifica se a saída existe
+                if (matriz.getSaida() == null) {
+                    throw new Exception("ERRO: Saída do labirinto não encontrada! Verifique se o arquivo contém o caractere 'S' para marcar a saída.");
+                }
+                // Verifica se a saída está bloqueada
+                if (matriz.getElemento(matriz.getSaida().getLinha(), matriz.getSaida().getColuna()) == '#') {
+                    throw new Exception("ERRO: A saída do labirinto está bloqueada por paredes! Verifique se há um caminho livre até a saída.");
+                }
+                // Se chegou aqui, não há caminho possível
+                throw new Exception("ERRO: Não foi possível encontrar um caminho até a saída! O labirinto está completamente bloqueado ou não há conexão entre a entrada e a saída.");
+            }
 
             // Marca como espaço vazio onde estava
             Coordenadas ultima = caminho.recupereUmItem();
@@ -109,6 +119,15 @@ public class Labirinto {
         Coordenadas entrada = matriz.getEntrada();
         Coordenadas saida = matriz.getSaida();
 
+        if (saida == null) {
+            throw new Exception("ERRO: Saída do labirinto não encontrada! Verifique se o arquivo contém o caractere 'S' para marcar a saída.");
+        }
+
+        // Verifica se a saída está bloqueada
+        if (matriz.getElemento(saida.getLinha(), saida.getColuna()) == '#') {
+            throw new Exception("ERRO: A saída do labirinto está bloqueada por paredes! Verifique se há um caminho livre até a saída.");
+        }
+
         fila.guardeUmItem(entrada);
         matriz.setElemento(entrada.getLinha(), entrada.getColuna(), '*');
 
@@ -133,7 +152,8 @@ public class Labirinto {
             }
         }
 
-        return false; // Não encontrou caminho
+        // Se chegou aqui, não há caminho possível
+        throw new Exception("ERRO: Não foi possível encontrar um caminho até a saída! O labirinto está completamente bloqueado ou não há conexão entre a entrada e a saída.");
     }
 
     // Método que reconstrói o caminho a partir dos predecessores

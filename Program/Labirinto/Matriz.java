@@ -1,5 +1,5 @@
-import java.util.Objects;
-import java.util.Arrays;
+import java.util.*;
+
 
 public class Matriz {
     private char[][] labirinto;
@@ -33,9 +33,14 @@ public class Matriz {
         if (!verificarDimensoes()) {
             throw new Exception("Dimensões do labirinto inválidas");
         }
+
+        // Verifica se as bordas têm paredes
+        if (!verificarParedesBordas()) {
+            throw new Exception("O labirinto deve ter paredes (#) em todas as bordas, exceto onde estão a entrada (E) e saída (S)");
+        }
     }
 
-    private boolean verificarEntradaSaida() {
+    private boolean verificarEntradaSaida() throws Exception {
         int contadorEntrada = 0;
         int contadorSaida = 0;
 
@@ -51,11 +56,48 @@ public class Matriz {
             }
         }
 
-        return contadorEntrada == 1 && contadorSaida == 1;
+        if (contadorEntrada == 0) {
+            throw new Exception("O labirinto não possui entrada (E)");
+        }
+        if (contadorSaida == 0) {
+            throw new Exception("O labirinto não possui saída (S)");
+        }
+        if (contadorEntrada > 1) {
+            throw new Exception("O labirinto possui mais de uma entrada (E)");
+        }
+        if (contadorSaida > 1) {
+            throw new Exception("O labirinto possui mais de uma saída (S)");
+        }
+
+        return true;
     }
 
     private boolean verificarDimensoes() {
         return linhas > 0 && colunas > 0 && linhas <= 100 && colunas <= 100;
+    }
+
+    private boolean verificarParedesBordas() {
+        // Verifica primeira e última linha
+        for (int j = 0; j < colunas; j++) {
+            if (labirinto[0][j] != '#' && labirinto[0][j] != 'E' && labirinto[0][j] != 'S') {
+                return false;
+            }
+            if (labirinto[linhas-1][j] != '#' && labirinto[linhas-1][j] != 'E' && labirinto[linhas-1][j] != 'S') {
+                return false;
+            }
+        }
+
+        // Verifica primeira e última coluna
+        for (int i = 0; i < linhas; i++) {
+            if (labirinto[i][0] != '#' && labirinto[i][0] != 'E' && labirinto[i][0] != 'S') {
+                return false;
+            }
+            if (labirinto[i][colunas-1] != '#' && labirinto[i][colunas-1] != 'E' && labirinto[i][colunas-1] != 'S') {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public int getLinhas() {
