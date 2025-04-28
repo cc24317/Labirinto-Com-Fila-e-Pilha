@@ -1,51 +1,53 @@
 public class Main {
     public static void main(String[] args) {
         try {
-            // Caminho do arquivo de teste
-            String caminhoArquivo = "C:\\Users\\NatalyJessica\\Documents\\labirinto1.txt";
-            
+            // Caminho do arquivo de teste (deixe apenas o nome se estiver na mesma pasta)
+            String caminhoArquivo = "labirinto1.txt";
+
             // Criar o objeto Labirinto
             Labirinto labirinto = new Labirinto(caminhoArquivo);
-            
-            // Exibir informações iniciais do labirinto
-            System.out.println("Labirinto carregado com sucesso!");
-            System.out.println("Dimensões: " + labirinto.getMatriz().getLinhas() + "x" + labirinto.getMatriz().getColunas());
-            System.out.println("Posição da Entrada (E): " + labirinto.getMatriz().getEntrada());
-            System.out.println("Posição da Saída (S): " + labirinto.getMatriz().getSaida());
-            System.out.println("\nLabirinto inicial:");
-            System.out.println(labirinto.getMatriz().toString());
-            
-            // Tentar percorrer o labirinto
-            System.out.println("\nPercorrendo o labirinto...");
+
+            // Tentar percorrer o labirinto usando busca em profundidade (DFS)
             boolean encontrou = labirinto.percorrerLabirinto();
-            
+
             // Exibir resultado
             if (labirinto.isSaidaEncontrada()) {
-                System.out.println("\nSaída encontrada!");
-                System.out.println("\nLabirinto após percorrer (caminho marcado com '*'):");
-                System.out.println(labirinto.getMatriz().toString());
-                
-                // Exibir o caminho encontrado
+                // Exibir o caminho percorrido da entrada até a saída
                 System.out.println("\nCaminho percorrido:");
+
+                // Criar uma pilha auxiliar para inverter a ordem do caminho
+                Pilha<Coordenadas> inverso = new Pilha<>(labirinto.getMatriz().getLinhas() * labirinto.getMatriz().getColunas());
+
+                // Passar todos os elementos da pilha original para a pilha inversa
                 Pilha<Coordenadas> caminho = labirinto.getCaminho();
-                while (!caminho.isVazia()) {
-                    try {
+
+                try {
+                    while (!caminho.isVazia()) {
                         Coordenadas coord = caminho.recupereUmItem();
                         caminho.removaUmItem();
-                        System.out.println("(" + coord.getLinha() + "," + coord.getColuna() + ")");
-                    } catch (Exception e) {
-                        break;
+                        inverso.guardeUmItem(coord);
                     }
+
+                    // Agora desempilha do inverso imprimindo na mesma linha
+                    while (!inverso.isVazia()) {
+                        Coordenadas coord = inverso.recupereUmItem();
+                        inverso.removaUmItem();
+                        System.out.print("(" + coord.getLinha() + "," + coord.getColuna() + ") ");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Erro ao imprimir o caminho: " + e.getMessage());
                 }
+
+                // Quebra linha no final
+                System.out.println();
             } else {
                 System.out.println("\nSaída não encontrada!");
             }
-            
+
         } catch (Exception e) {
+            // Trata qualquer erro que ocorra durante a execução
             System.out.println("Erro: " + e.getMessage());
             e.printStackTrace();
         }
     }
 }
-
-
