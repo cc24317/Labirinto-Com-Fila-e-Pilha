@@ -1,12 +1,21 @@
 public class Main {
     public static void main(String[] args) {
         try {
-            String caminhoArquivo = "C:\\Users\\NatalyJessica\\Documents\\labirinto1.txt";
+            
+            String caminhoArquivo = "/Users/u21446/Documents/Estrutura_de_Dados/Labirinto-Com-Fila-e-Pilha/Program/Labirinto/labirintoTeste.txt";
+            //String caminhoArquivo = "/Users/u21446/Documents/Estrutura_de_Dados/Labirinto-Com-Fila-e-Pilha/Program/Labirinto/2entradas.txt";
+            //String caminhoArquivo = "/Users/u21446/Documents/Estrutura_de_Dados/Labirinto-Com-Fila-e-Pilha/Program/Labirinto/2saidas.txt";
+            //String caminhoArquivo = "/Users/u21446/Documents/Estrutura_de_Dados/Labirinto-Com-Fila-e-Pilha/Program/Labirinto/64x64.txt";
+            //String caminhoArquivo = "/Users/u21446/Documents/Estrutura_de_Dados/Labirinto-Com-Fila-e-Pilha/Program/Labirinto/saidaInatingivel.txt";
+            //String caminhoArquivo = "/Users/u21446/Documents/Estrutura_de_Dados/Labirinto-Com-Fila-e-Pilha/Program/Labirinto/semEntrada.txt";
+            //String caminhoArquivo = "/Users/u21446/Documents/Estrutura_de_Dados/Labirinto-Com-Fila-e-Pilha/Program/Labirinto/semSaida.txt";
+
             // Criar o objeto Labirinto
             Labirinto labirinto = new Labirinto(caminhoArquivo);
-            boolean encontrou = labirinto.percorrerLabirinto();
+            
+            labirinto.percorrerLabirinto();
 
-            // Exibir resultado
+            // Exibi resultado
             if (labirinto.isSaidaEncontrada()) {
                 System.out.println("\nCaminho percorrido:");
                 
