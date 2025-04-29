@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Labirinto {
     private Matriz matriz;
@@ -112,6 +110,7 @@ public class Labirinto {
         return direcoes;
     }
 
+    /*
     // Método para resolver o labirinto utilizando busca em largura (BFS)
     public boolean resolverComFila() throws Exception {
         Fila<Coordenadas> fila = new Fila<>(matriz.getLinhas() * matriz.getColunas());
@@ -181,7 +180,7 @@ public class Labirinto {
         }
 
         return vizinhos.toArray(new Coordenadas[0]);
-    }
+    } */
 
     // Getters
     public boolean isSaidaEncontrada() { return saidaEncontrada; }
