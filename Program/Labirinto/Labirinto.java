@@ -110,77 +110,7 @@ public class Labirinto {
         return direcoes;
     }
 
-    /*
-    // Método para resolver o labirinto utilizando busca em largura (BFS)
-    public boolean resolverComFila() throws Exception {
-        Fila<Coordenadas> fila = new Fila<>(matriz.getLinhas() * matriz.getColunas());
-        Coordenadas[][] predecessores = new Coordenadas[matriz.getLinhas()][matriz.getColunas()];
-        Coordenadas entrada = matriz.getEntrada();
-        Coordenadas saida = matriz.getSaida();
-
-        if (saida == null) {
-            throw new Exception("ERRO: Saída do labirinto não encontrada! Verifique se o arquivo contém o caractere 'S' para marcar a saída.");
-        }
-
-        // Verifica se a saída está bloqueada
-        if (matriz.getElemento(saida.getLinha(), saida.getColuna()) == '#') {
-            throw new Exception("ERRO: A saída do labirinto está bloqueada por paredes! Verifique se há um caminho livre até a saída.");
-        }
-
-        fila.guardeUmItem(entrada);
-        matriz.setElemento(entrada.getLinha(), entrada.getColuna(), '*');
-
-        while (!fila.isVazia()) {
-            Coordenadas atual = fila.recupereUmItem();
-            fila.removaUmItem();
-
-            if (atual.equals(saida)) {
-                reconstruirCaminho(predecessores, saida, entrada);
-                saidaEncontrada = true;
-                return true;
-            }
-
-            for (Coordenadas vizinho : vizinhosValidos(atual)) {
-                if (matriz.getElemento(vizinho.getLinha(), vizinho.getColuna()) == ' ' ||
-                    matriz.getElemento(vizinho.getLinha(), vizinho.getColuna()) == 'S') {
-
-                    fila.guardeUmItem(vizinho);
-                    matriz.setElemento(vizinho.getLinha(), vizinho.getColuna(), '*');
-                    predecessores[vizinho.getLinha()][vizinho.getColuna()] = atual;
-                }
-            }
-        }
-
-        // Se chegou aqui, não há caminho possível
-        throw new Exception("ERRO: Não foi possível encontrar um caminho até a saída! O labirinto está completamente bloqueado ou não há conexão entre a entrada e a saída.");
-    }
-
-    // Método que reconstrói o caminho a partir dos predecessores
-    private void reconstruirCaminho(Coordenadas[][] predecessores, Coordenadas fim, Coordenadas inicio) throws Exception {
-        Coordenadas atual = fim;
-        while (!atual.equals(inicio)) {
-            caminho.guardeUmItem(atual);
-            atual = predecessores[atual.getLinha()][atual.getColuna()];
-        }
-        caminho.guardeUmItem(inicio);
-    }
-
-    // Método que retorna os vizinhos válidos para um ponto
-    private Coordenadas[] vizinhosValidos(Coordenadas coord) {
-        int[][] movimentos = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
-        List<Coordenadas> vizinhos = new ArrayList<>();
-
-        for (int[] mov : movimentos) {
-            int novaLinha = coord.getLinha() + mov[0];
-            int novaColuna = coord.getColuna() + mov[1];
-
-            if (novaLinha >= 0 && novaLinha < matriz.getLinhas() &&
-                novaColuna >= 0 && novaColuna < matriz.getColunas())
-                vizinhos.add(new Coordenadas(novaLinha, novaColuna));
-        }
-
-        return vizinhos.toArray(new Coordenadas[0]);
-    } */
+   
 
     // Getters
     public boolean isSaidaEncontrada() { return saidaEncontrada; }
