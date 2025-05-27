@@ -2,13 +2,13 @@ public class Main {
     public static void main(String[] args) {
         try {
             
-            String caminhoArquivo = "/Users/u21446/Documents/Estrutura_de_Dados/Labirinto-Com-Fila-e-Pilha/Program/Labirinto/labirintoTeste.txt";
-            //String caminhoArquivo = "/Users/u21446/Documents/Estrutura_de_Dados/Labirinto-Com-Fila-e-Pilha/Program/Labirinto/2entradas.txt";
-            //String caminhoArquivo = "/Users/u21446/Documents/Estrutura_de_Dados/Labirinto-Com-Fila-e-Pilha/Program/Labirinto/2saidas.txt";
-            //String caminhoArquivo = "/Users/u21446/Documents/Estrutura_de_Dados/Labirinto-Com-Fila-e-Pilha/Program/Labirinto/64x64.txt";
-            //String caminhoArquivo = "/Users/u21446/Documents/Estrutura_de_Dados/Labirinto-Com-Fila-e-Pilha/Program/Labirinto/saidaInatingivel.txt";
-            //String caminhoArquivo = "/Users/u21446/Documents/Estrutura_de_Dados/Labirinto-Com-Fila-e-Pilha/Program/Labirinto/semEntrada.txt";
-            //String caminhoArquivo = "/Users/u21446/Documents/Estrutura_de_Dados/Labirinto-Com-Fila-e-Pilha/Program/Labirinto/semSaida.txt";
+            String caminhoArquivo = "C:\\Users\\NatalyJessica\\Documents\\Estrutura de dados\\Labirinto-Com-Fila-e-Pilha\\Program\\Labirinto\\labirintoTeste.txt";
+            //String caminhoArquivo = "C:\\Users\\NatalyJessica\\Documents\\Estrutura de dados\\Labirinto-Com-Fila-e-Pilha\\Program\\Labirinto\\2entradas.txt";
+            //String caminhoArquivo = "C:\\Users\\NatalyJessica\\Documents\\Estrutura de dados\\Labirinto-Com-Fila-e-Pilha\\Program\\Labirinto\\2saidas.txt";
+            //String caminhoArquivo = "C:\\Users\\NatalyJessica\\Documents\\Estrutura de dados\\Labirinto-Com-Fila-e-Pilha\\Program\\Labirinto\\64x64.txt";
+            //String caminhoArquivo = "C:\\Users\\NatalyJessica\\Documents\\Estrutura de dados\\Labirinto-Com-Fila-e-Pilha\\Program\\Labirinto\\saidaInatingivel.txt";
+            //String caminhoArquivo = "C:\\Users\\NatalyJessica\\Documents\\Estrutura de dados\\Labirinto-Com-Fila-e-Pilha\\Program\\Labirinto\\semEntrada.txt";
+           //String caminhoArquivo = "C:\\Users\\NatalyJessica\\Documents\\Estrutura de dados\\Labirinto-Com-Fila-e-Pilha\\Program\\Labirinto\\semSaida.txt";
 
             // Criar o objeto Labirinto
             Labirinto labirinto = new Labirinto(caminhoArquivo);
